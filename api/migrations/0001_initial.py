@@ -1,0 +1,30 @@
+# Generated migration
+
+from django.db import migrations, models
+
+
+class Migration(migrations.Migration):
+
+    initial = True
+
+    dependencies = [
+    ]
+
+    operations = [
+        migrations.CreateModel(
+            name='Member',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('username', models.CharField(db_index=True, max_length=150, unique=True)),
+                ('password', models.CharField(max_length=128)),
+                ('email', models.EmailField(blank=True, max_length=254, null=True)),
+                ('first_name', models.CharField(blank=True, max_length=150, null=True)),
+                ('last_name', models.CharField(blank=True, max_length=150, null=True)),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+            ],
+            options={
+                'db_table': 'members',
+                'ordering': ['-created_at'],
+            },
+        ),
+    ]

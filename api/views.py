@@ -1,19 +1,152 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.authtoken.models import Token
 from django.utils import timezone
 from drf_spectacular.utils import extend_schema
-from .serializers import MessageSerializer
+
+from .models import Member
+from .serializers import (
+    MemberSerializer,
+    RegisterSerializer,
+    LoginSerializer,
+    ProfileUpdateSerializer,
+)
+from .authentication import MemberTokenAuthentication
 
 
-class HelloView(APIView):
+class RegisterView(APIView):
     """
-    A simple API endpoint that returns a greeting message.
+    API endpoint for user registration.
     """
+    permission_classes = [AllowAny]
 
     @extend_schema(
-        responses={200: MessageSerializer}, description="Get a hello world message"
+        request=RegisterSerializer,
+        responses={201: MemberSerializer},
+        description="Register a new user"
+    )
+    def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            member = serializer.save()
+            
+            # Create token for the new user
+            token, created = Token.objects.get_or_create(user_id=member.id)
+            
+            return Response(
+                {
+                    "id": member.id,
+                    "username": member.username,
+                    "token": token.key,
+                },
+                status=status.HTTP_201_CREATED
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LoginView(APIView):
+    """
+    API endpoint for user login.
+    """
+    permission_classes = [AllowAny]
+
+    @extend_schema(
+        request=LoginSerializer,
+        responses={200: dict},
+        description="Login user and get authentication token"
+    )
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        username = serializer.validated_data["username"]
+        password = serializer.validated_data["password"]
+        
+        try:
+            member = Member.objects.get(username=username)
+        except Member.DoesNotExist:
+            return Response(
+                {"error": "Invalid username or password"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        if not member.check_password(password):
+            return Response(
+                {"error": "Invalid username or password"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Get or create token
+        token, created = Token.objects.get_or_create(user_id=member.id)
+        
+        return Response(
+            {
+                "token": token.key,
+                "user": {
+                    "id": member.id,
+                    "username": member.username,
+                }
+            },
+            status=status.HTTP_200_OK
+        )
+
+
+class ProfileView(APIView):
+    """
+    API endpoint to get current user profile.
+    """
+    authentication_classes = [MemberTokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        responses={200: MemberSerializer},
+        description="Get current user profile"
     )
     def get(self, request):
-        data = {"message": "Hello!", "timestamp": timezone.now()}
-        serializer = MessageSerializer(data)
-        return Response(serializer.data)
+        serializer = MemberSerializer(request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ProfileUpdateView(APIView):
+    """
+    API endpoint to update current user profile.
+    """
+    authentication_classes = [MemberTokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        request=ProfileUpdateSerializer,
+        responses={200: MemberSerializer},
+        description="Update user profile (full update)"
+    )
+    def put(self, request):
+        serializer = ProfileUpdateSerializer(
+            request.user,
+            data=request.data,
+            partial=False
+        )
+        if serializer.is_valid():
+            serializer.save()
+            response_serializer = MemberSerializer(request.user)
+            return Response(response_serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @extend_schema(
+        request=ProfileUpdateSerializer,
+        responses={200: MemberSerializer},
+        description="Update user profile (partial update)"
+    )
+    def patch(self, request):
+        serializer = ProfileUpdateSerializer(
+            request.user,
+            data=request.data,
+            partial=True
+        )
+        if serializer.is_valid():
+            serializer.save()
+            response_serializer = MemberSerializer(request.user)
+            return Response(response_serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
