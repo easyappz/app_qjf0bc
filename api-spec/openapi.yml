@@ -14,8 +14,6 @@ paths:
     $ref: './paths/login.yml'
   /profile/:
     $ref: './paths/profile.yml'
-  /profile/update/:
-    $ref: './paths/profile-update.yml'
 
 components:
   securitySchemes:

@@ -31,3 +31,59 @@ get:
             $ref: '../openapi.yml#/components/schemas/Error'
           example:
             error: Authentication credentials were not provided
+
+put:
+  summary: Update user profile
+  description: Update current authenticated user's profile information
+  operationId: updateProfile
+  tags:
+    - Profile
+  security:
+    - TokenAuth: []
+  x-isSecure: true
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - username
+          properties:
+            username:
+              type: string
+              description: New username
+              example: johndoe_updated
+  responses:
+    '200':
+      description: Profile updated successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                description: User ID
+                example: 1
+              username:
+                type: string
+                description: Updated username
+                example: johndoe_updated
+    '400':
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: '../openapi.yml#/components/schemas/ValidationError'
+          example:
+            username:
+              - This field is required.
+    '401':
+      description: Unauthorized - invalid or missing token
+      content:
+        application/json:
+          schema:
+            $ref: '../openapi.yml#/components/schemas/Error'
+          example:
+            error: Authentication credentials were not provided
