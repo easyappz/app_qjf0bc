@@ -1,3 +1,4 @@
+import secrets
 from django.db import models
 from django.contrib.auth.hashers import make_password, check_password
 
@@ -45,3 +46,30 @@ class Member(models.Model):
     def has_module_perms(self, app_label):
         """Check if user has permissions to view app (for DRF compatibility)."""
         return True
+
+
+class AuthToken(models.Model):
+    """
+    Authentication token model for Member authentication.
+    """
+    token = models.CharField(max_length=64, unique=True, db_index=True)
+    member = models.ForeignKey(Member, on_delete=models.CASCADE, related_name="auth_tokens")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "auth_tokens"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"Token for {self.member.username}"
+
+    @staticmethod
+    def generate_token():
+        """Generate a unique token."""
+        return secrets.token_hex(32)
+
+    @classmethod
+    def create_token(cls, member):
+        """Create a new token for a member."""
+        token = cls.generate_token()
+        return cls.objects.create(token=token, member=member)
