@@ -2,11 +2,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.authtoken.models import Token
-from django.utils import timezone
 from drf_spectacular.utils import extend_schema
 
-from .models import Member
+from .models import Member, AuthToken
 from .serializers import (
     MemberSerializer,
     RegisterSerializer,
@@ -33,13 +31,13 @@ class RegisterView(APIView):
             member = serializer.save()
             
             # Create token for the new user
-            token, created = Token.objects.get_or_create(user_id=member.id)
+            auth_token = AuthToken.create_token(member)
             
             return Response(
                 {
                     "id": member.id,
                     "username": member.username,
-                    "token": token.key,
+                    "token": auth_token.token,
                 },
                 status=status.HTTP_201_CREATED
             )
@@ -80,11 +78,13 @@ class LoginView(APIView):
             )
         
         # Get or create token
-        token, created = Token.objects.get_or_create(user_id=member.id)
+        auth_token = member.auth_tokens.first()
+        if not auth_token:
+            auth_token = AuthToken.create_token(member)
         
         return Response(
             {
-                "token": token.key,
+                "token": auth_token.token,
                 "user": {
                     "id": member.id,
                     "username": member.username,
