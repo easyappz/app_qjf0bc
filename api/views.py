@@ -9,6 +9,7 @@ from .serializers import (
     MemberSerializer,
     RegisterSerializer,
     LoginSerializer,
+    ProfileSerializer,
     ProfileUpdateSerializer,
 )
 from .authentication import MemberTokenAuthentication
@@ -96,30 +97,51 @@ class LoginView(APIView):
 
 class ProfileView(APIView):
     """
-    API endpoint to get current user profile.
+    API endpoint to get and update current user profile.
+    Combined GET and PUT methods for /profile/ endpoint.
     """
     authentication_classes = [MemberTokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     @extend_schema(
-        responses={200: MemberSerializer},
+        responses={200: ProfileSerializer},
         description="Get current user profile"
     )
     def get(self, request):
-        serializer = MemberSerializer(request.user)
+        """Get current user profile."""
+        serializer = ProfileSerializer(request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @extend_schema(
+        request=ProfileUpdateSerializer,
+        responses={200: ProfileSerializer},
+        description="Update user profile"
+    )
+    def put(self, request):
+        """Update current user profile."""
+        serializer = ProfileUpdateSerializer(
+            request.user,
+            data=request.data,
+            partial=False
+        )
+        if serializer.is_valid():
+            serializer.save()
+            response_serializer = ProfileSerializer(request.user)
+            return Response(response_serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ProfileUpdateView(APIView):
     """
     API endpoint to update current user profile.
+    Deprecated - use ProfileView instead.
     """
     authentication_classes = [MemberTokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     @extend_schema(
         request=ProfileUpdateSerializer,
-        responses={200: MemberSerializer},
+        responses={200: ProfileSerializer},
         description="Update user profile (full update)"
     )
     def put(self, request):
@@ -130,13 +152,13 @@ class ProfileUpdateView(APIView):
         )
         if serializer.is_valid():
             serializer.save()
-            response_serializer = MemberSerializer(request.user)
+            response_serializer = ProfileSerializer(request.user)
             return Response(response_serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @extend_schema(
         request=ProfileUpdateSerializer,
-        responses={200: MemberSerializer},
+        responses={200: ProfileSerializer},
         description="Update user profile (partial update)"
     )
     def patch(self, request):
@@ -147,6 +169,6 @@ class ProfileUpdateView(APIView):
         )
         if serializer.is_valid():
             serializer.save()
-            response_serializer = MemberSerializer(request.user)
+            response_serializer = ProfileSerializer(request.user)
             return Response(response_serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -60,15 +60,24 @@ class LoginSerializer(serializers.Serializer):
     )
 
 
+class ProfileSerializer(serializers.ModelSerializer):
+    """Serializer for getting user profile."""
+    
+    class Meta:
+        model = Member
+        fields = ["id", "username"]
+        read_only_fields = ["id", "username"]
+
+
 class ProfileUpdateSerializer(serializers.ModelSerializer):
     """Serializer for updating user profile."""
     
     class Meta:
         model = Member
-        fields = ["email", "first_name", "last_name"]
+        fields = ["username"]
     
-    def validate_email(self, value):
-        """Validate email format if provided."""
-        if value and value.strip() == "":
-            return None
+    def validate_username(self, value):
+        """Validate username uniqueness."""
+        if Member.objects.filter(username=value).exclude(id=self.instance.id).exists():
+            raise serializers.ValidationError("A user with this username already exists.")
         return value
