@@ -1,0 +1,43 @@
+openapi: 3.0.3
+info:
+  title: User Authentication API
+  description: API для системы аутентификации пользователей
+  version: 1.0.0
+servers:
+  - url: /api
+    description: API Server
+
+paths:
+  /register:
+    $ref: './paths/register.yml'
+  /login:
+    $ref: './paths/login.yml'
+  /profile:
+    $ref: './paths/profile.yml'
+  /profile/update:
+    $ref: './paths/profile-update.yml'
+
+components:
+  securitySchemes:
+    TokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: 'Token-based authentication. Format: Token <your-token>'
+  
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Описание ошибки
+    
+    ValidationError:
+      type: object
+      properties:
+        field_name:
+          type: array
+          items:
+            type: string
+          description: Список ошибок валидации для поля
