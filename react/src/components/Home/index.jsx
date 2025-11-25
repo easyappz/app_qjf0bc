@@ -1,8 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { isAuthenticated } from '../../api/auth';
 import './Home.css';
 
 export const Home = () => {
+  const authenticated = isAuthenticated();
+
   return (
     <div className="home-container" data-easytag="id1-react/src/components/Home/index.jsx">
       <div className="home-content">
@@ -14,12 +17,20 @@ export const Home = () => {
         </div>
 
         <div className="home-actions">
-          <Link to="/register" className="home-button home-button-primary">
-            Регистрация
-          </Link>
-          <Link to="/login" className="home-button home-button-secondary">
-            Вход
-          </Link>
+          {!authenticated ? (
+            <>
+              <Link to="/register" className="home-button home-button-primary">
+                Регистрация
+              </Link>
+              <Link to="/login" className="home-button home-button-secondary">
+                Вход
+              </Link>
+            </>
+          ) : (
+            <Link to="/profile" className="home-button home-button-primary">
+              Профиль
+            </Link>
+          )}
         </div>
 
         <div className="home-features">

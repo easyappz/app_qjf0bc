@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getProfile, updateProfilePartial } from '../../api/profile';
-import { getAuthToken, removeAuthToken } from '../../api/auth';
+import { getProfile, updateProfile } from '../../api/profile';
+import { getAuthToken, logoutUser } from '../../api/auth';
 import './Profile.css';
 
 const Profile = () => {
@@ -10,11 +10,7 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({
-    email: '',
-    first_name: '',
-    last_name: '',
-  });
+  const [username, setUsername] = useState('');
   const [updateError, setUpdateError] = useState(null);
   const [updateSuccess, setUpdateSuccess] = useState(false);
 
@@ -34,14 +30,10 @@ const Profile = () => {
       setError(null);
       const data = await getProfile();
       setProfile(data);
-      setFormData({
-        email: data.email || '',
-        first_name: data.first_name || '',
-        last_name: data.last_name || '',
-      });
+      setUsername(data.username || '');
     } catch (err) {
       if (err.response && err.response.status === 401) {
-        removeAuthToken();
+        logoutUser();
         navigate('/login');
       } else {
         setError('Ошибка загрузки профиля');
@@ -51,21 +43,9 @@ const Profile = () => {
     }
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
   const handleEditToggle = () => {
     if (isEditing) {
-      setFormData({
-        email: profile.email || '',
-        first_name: profile.first_name || '',
-        last_name: profile.last_name || '',
-      });
+      setUsername(profile.username || '');
       setUpdateError(null);
       setUpdateSuccess(false);
     }
@@ -77,8 +57,13 @@ const Profile = () => {
     setUpdateError(null);
     setUpdateSuccess(false);
 
+    if (!username.trim()) {
+      setUpdateError('Имя пользователя не может быть пустым');
+      return;
+    }
+
     try {
-      const updatedData = await updateProfilePartial(formData);
+      const updatedData = await updateProfile(username);
       setProfile(updatedData);
       setIsEditing(false);
       setUpdateSuccess(true);
@@ -86,10 +71,19 @@ const Profile = () => {
     } catch (err) {
       if (err.response && err.response.data) {
         const errors = err.response.data;
-        const errorMessages = Object.entries(errors)
-          .map(([field, messages]) => `${field}: ${Array.isArray(messages) ? messages.join(', ') : messages}`)
-          .join('; ');
-        setUpdateError(errorMessages || 'Ошибка обновления профиля');
+        if (typeof errors === 'object') {
+          const errorMessages = Object.entries(errors)
+            .map(([field, messages]) => {
+              if (Array.isArray(messages)) {
+                return messages.join(', ');
+              }
+              return messages;
+            })
+            .join('; ');
+          setUpdateError(errorMessages || 'Ошибка обновления профиля');
+        } else {
+          setUpdateError('Ошибка обновления профиля');
+        }
       } else {
         setUpdateError('Ошибка обновления профиля');
       }
@@ -97,20 +91,8 @@ const Profile = () => {
   };
 
   const handleLogout = () => {
-    removeAuthToken();
+    logoutUser();
     navigate('/login');
-  };
-
-  const formatDate = (dateString) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    return date.toLocaleString('ru-RU', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
   };
 
   if (loading) {
@@ -155,18 +137,14 @@ const Profile = () => {
           <div className="profile-info-section">
             <h2>Информация</h2>
             <div className="info-item">
-              <span className="info-label">Имя пользователя:</span>
-              <span className="info-value">{profile?.username}</span>
-            </div>
-            <div className="info-item">
-              <span className="info-label">Дата регистрации:</span>
-              <span className="info-value">{formatDate(profile?.created_at)}</span>
+              <span className="info-label">ID:</span>
+              <span className="info-value">{profile?.id}</span>
             </div>
           </div>
 
           <div className="profile-edit-section">
             <div className="section-header">
-              <h2>Редактируемые данные</h2>
+              <h2>Имя пользователя</h2>
               {!isEditing && (
                 <button className="edit-button" onClick={handleEditToggle}>
                   Редактировать
@@ -177,55 +155,22 @@ const Profile = () => {
             {!isEditing ? (
               <div className="profile-display">
                 <div className="info-item">
-                  <span className="info-label">Email:</span>
-                  <span className="info-value">{profile?.email || 'Не указан'}</span>
-                </div>
-                <div className="info-item">
-                  <span className="info-label">Имя:</span>
-                  <span className="info-value">{profile?.first_name || 'Не указано'}</span>
-                </div>
-                <div className="info-item">
-                  <span className="info-label">Фамилия:</span>
-                  <span className="info-value">{profile?.last_name || 'Не указана'}</span>
+                  <span className="info-label">Имя пользователя:</span>
+                  <span className="info-value">{profile?.username}</span>
                 </div>
               </div>
             ) : (
               <form className="profile-form" onSubmit={handleSubmit}>
                 <div className="form-group">
-                  <label htmlFor="email">Email:</label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    placeholder="Введите email"
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="first_name">Имя:</label>
+                  <label htmlFor="username">Имя пользователя:</label>
                   <input
                     type="text"
-                    id="first_name"
-                    name="first_name"
-                    value={formData.first_name}
-                    onChange={handleInputChange}
-                    placeholder="Введите имя"
-                    maxLength={150}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="last_name">Фамилия:</label>
-                  <input
-                    type="text"
-                    id="last_name"
-                    name="last_name"
-                    value={formData.last_name}
-                    onChange={handleInputChange}
-                    placeholder="Введите фамилию"
-                    maxLength={150}
+                    id="username"
+                    name="username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Введите имя пользователя"
+                    required
                   />
                 </div>
 

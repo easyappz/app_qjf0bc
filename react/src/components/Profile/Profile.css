@@ -1,6 +1,6 @@
 .profile-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #e0e5ec;
   padding: 40px 20px;
   display: flex;
   justify-content: center;
@@ -8,9 +8,9 @@
 }
 
 .profile-card {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  background: #e0e5ec;
+  border-radius: 24px;
+  box-shadow: 16px 16px 32px rgba(163, 177, 198, 0.6), -16px -16px 32px rgba(255, 255, 255, 0.8);
   max-width: 800px;
   width: 100%;
   padding: 40px;
@@ -23,32 +23,36 @@
   align-items: center;
   margin-bottom: 30px;
   padding-bottom: 20px;
-  border-bottom: 2px solid #f0f0f0;
+  border-bottom: none;
 }
 
 .profile-header h1 {
   font-size: 32px;
   font-weight: 700;
-  color: #333;
+  color: #2c3e50;
   margin: 0;
+  text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8), -1px -1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .logout-button {
-  background: #ff4757;
-  color: white;
+  background: #e0e5ec;
+  color: #e74c3c;
   border: none;
   padding: 12px 24px;
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 6px 6px 12px rgba(163, 177, 198, 0.6), -6px -6px 12px rgba(255, 255, 255, 0.8);
 }
 
 .logout-button:hover {
-  background: #ee5a6f;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 71, 87, 0.3);
+  box-shadow: 4px 4px 8px rgba(163, 177, 198, 0.6), -4px -4px 8px rgba(255, 255, 255, 0.8);
+}
+
+.logout-button:active {
+  box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.6), inset -4px -4px 8px rgba(255, 255, 255, 0.8);
 }
 
 .profile-loading,
@@ -56,28 +60,33 @@
   text-align: center;
   padding: 60px 20px;
   font-size: 18px;
-  color: white;
+  color: #2c3e50;
   font-weight: 500;
+  background: #e0e5ec;
+  border-radius: 24px;
+  box-shadow: 16px 16px 32px rgba(163, 177, 198, 0.6), -16px -16px 32px rgba(255, 255, 255, 0.8);
 }
 
 .success-message {
-  background: #10b981;
-  color: white;
+  background: #e0e5ec;
+  color: #27ae60;
   padding: 16px 20px;
-  border-radius: 8px;
+  border-radius: 12px;
   margin-bottom: 24px;
-  font-weight: 500;
+  font-weight: 600;
   text-align: center;
+  box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.4), inset -4px -4px 8px rgba(255, 255, 255, 0.6);
 }
 
 .error-message {
-  background: #ef4444;
-  color: white;
+  background: #e0e5ec;
+  color: #e74c3c;
   padding: 16px 20px;
-  border-radius: 8px;
+  border-radius: 12px;
   margin-bottom: 24px;
-  font-weight: 500;
+  font-weight: 600;
   text-align: center;
+  box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.4), inset -4px -4px 8px rgba(255, 255, 255, 0.6);
 }
 
 .profile-content {
@@ -88,16 +97,17 @@
 
 .profile-info-section,
 .profile-edit-section {
-  background: #f9fafb;
-  border-radius: 12px;
+  background: #e0e5ec;
+  border-radius: 16px;
   padding: 24px;
+  box-shadow: inset 6px 6px 12px rgba(163, 177, 198, 0.4), inset -6px -6px 12px rgba(255, 255, 255, 0.6);
 }
 
 .profile-info-section h2,
 .profile-edit-section h2 {
   font-size: 22px;
   font-weight: 600;
-  color: #333;
+  color: #2c3e50;
   margin: 0 0 20px 0;
 }
 
@@ -109,21 +119,24 @@
 }
 
 .edit-button {
-  background: #667eea;
-  color: white;
+  background: #e0e5ec;
+  color: #667eea;
   border: none;
   padding: 10px 20px;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 4px 4px 8px rgba(163, 177, 198, 0.6), -4px -4px 8px rgba(255, 255, 255, 0.8);
 }
 
 .edit-button:hover {
-  background: #5568d3;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  box-shadow: 2px 2px 4px rgba(163, 177, 198, 0.6), -2px -2px 4px rgba(255, 255, 255, 0.8);
+}
+
+.edit-button:active {
+  box-shadow: inset 2px 2px 4px rgba(163, 177, 198, 0.6), inset -2px -2px 4px rgba(255, 255, 255, 0.8);
 }
 
 .info-item {
@@ -131,7 +144,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px 0;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid rgba(163, 177, 198, 0.2);
 }
 
 .info-item:last-child {
@@ -140,13 +153,13 @@
 
 .info-label {
   font-weight: 600;
-  color: #6b7280;
+  color: #5a6c7d;
   font-size: 15px;
 }
 
 .info-value {
   font-weight: 500;
-  color: #111827;
+  color: #2c3e50;
   font-size: 15px;
   text-align: right;
 }
@@ -165,23 +178,28 @@
 
 .form-group label {
   font-weight: 600;
-  color: #374151;
+  color: #2c3e50;
   font-size: 14px;
 }
 
 .form-group input {
   padding: 12px 16px;
-  border: 2px solid #e5e7eb;
-  border-radius: 8px;
+  border: none;
+  border-radius: 10px;
   font-size: 15px;
   transition: all 0.3s ease;
-  background: white;
+  background: #e0e5ec;
+  color: #2c3e50;
+  box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.4), inset -4px -4px 8px rgba(255, 255, 255, 0.6);
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  box-shadow: inset 6px 6px 12px rgba(163, 177, 198, 0.5), inset -6px -6px 12px rgba(255, 255, 255, 0.7);
+}
+
+.form-group input::placeholder {
+  color: #95a5a6;
 }
 
 .form-actions {
@@ -195,36 +213,45 @@
   flex: 1;
   padding: 14px 24px;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  background: #e0e5ec;
 }
 
 .save-button {
-  background: #10b981;
-  color: white;
+  color: #27ae60;
+  box-shadow: 6px 6px 12px rgba(163, 177, 198, 0.6), -6px -6px 12px rgba(255, 255, 255, 0.8);
 }
 
 .save-button:hover {
-  background: #059669;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  box-shadow: 4px 4px 8px rgba(163, 177, 198, 0.6), -4px -4px 8px rgba(255, 255, 255, 0.8);
+}
+
+.save-button:active {
+  box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.6), inset -4px -4px 8px rgba(255, 255, 255, 0.8);
 }
 
 .cancel-button {
-  background: #6b7280;
-  color: white;
+  color: #7f8c8d;
+  box-shadow: 6px 6px 12px rgba(163, 177, 198, 0.6), -6px -6px 12px rgba(255, 255, 255, 0.8);
 }
 
 .cancel-button:hover {
-  background: #4b5563;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+  box-shadow: 4px 4px 8px rgba(163, 177, 198, 0.6), -4px -4px 8px rgba(255, 255, 255, 0.8);
+}
+
+.cancel-button:active {
+  box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.6), inset -4px -4px 8px rgba(255, 255, 255, 0.8);
 }
 
 @media (max-width: 768px) {
+  .profile-container {
+    padding: 20px;
+  }
+
   .profile-card {
     padding: 24px;
   }
@@ -240,6 +267,16 @@
   }
 
   .logout-button {
+    width: 100%;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .edit-button {
     width: 100%;
   }
 
