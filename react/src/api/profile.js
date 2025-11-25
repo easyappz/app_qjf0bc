@@ -30,7 +30,7 @@ export const getProfile = async () => {
  * @returns {Promise} Response with updated profile data
  */
 export const updateProfile = async (username) => {
-  const response = await instance.put('/api/profile/update/', {
+  const response = await instance.put('/api/profile/', {
     username,
   }, {
     headers: getAuthHeaders(),
