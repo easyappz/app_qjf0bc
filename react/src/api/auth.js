@@ -58,6 +58,13 @@ export const getAuthToken = () => {
 };
 
 /**
+ * Remove stored auth token
+ */
+export const removeAuthToken = () => {
+  localStorage.removeItem(TOKEN_KEY);
+};
+
+/**
  * Check if user is authenticated
  * @returns {boolean} True if token exists
  */
