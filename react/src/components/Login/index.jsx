@@ -18,7 +18,6 @@ const Login = () => {
       ...prev,
       [name]: value
     }));
-    // Clear error when user starts typing
     if (error) {
       setError(null);
     }
@@ -31,13 +30,18 @@ const Login = () => {
 
     try {
       await loginUser(formData.username, formData.password);
-      // Redirect to profile page after successful login
       navigate('/profile');
     } catch (err) {
       if (err.response && err.response.data) {
         const errorData = err.response.data;
         if (errorData.error) {
           setError(errorData.error);
+        } else if (errorData.username || errorData.password) {
+          if (errorData.username) {
+            setError(Array.isArray(errorData.username) ? errorData.username[0] : errorData.username);
+          } else if (errorData.password) {
+            setError(Array.isArray(errorData.password) ? errorData.password[0] : errorData.password);
+          }
         } else {
           setError('Неверное имя пользователя или пароль');
         }
@@ -72,9 +76,9 @@ const Login = () => {
               name="username"
               value={formData.username}
               onChange={handleChange}
-              className={error ? 'error' : ''}
+              className={error ? 'input-error' : ''}
               placeholder="Введите имя пользователя"
-              required
+              disabled={isLoading}
             />
           </div>
 
@@ -86,9 +90,9 @@ const Login = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className={error ? 'error' : ''}
+              className={error ? 'input-error' : ''}
               placeholder="Введите пароль"
-              required
+              disabled={isLoading}
             />
           </div>
 

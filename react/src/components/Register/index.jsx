@@ -18,12 +18,12 @@ const Register = () => {
       ...prev,
       [name]: value
     }));
-    // Clear error for this field when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: null
-      }));
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
     }
   };
 
@@ -34,13 +34,12 @@ const Register = () => {
 
     try {
       await registerUser(formData.username, formData.password);
-      // Redirect to login page after successful registration
-      navigate('/login');
+      navigate('/profile');
     } catch (error) {
       if (error.response && error.response.data) {
         setErrors(error.response.data);
       } else {
-        setErrors({ general: ['Произошла ошибка при регистрации. Попробуйте позже.'] });
+        setErrors({ general: 'Произошла ошибка при регистрации. Попробуйте позже.' });
       }
     } finally {
       setIsLoading(false);
@@ -48,8 +47,11 @@ const Register = () => {
   };
 
   const getErrorMessage = (field) => {
-    if (errors[field] && Array.isArray(errors[field])) {
-      return errors[field][0];
+    if (errors[field]) {
+      if (Array.isArray(errors[field])) {
+        return errors[field][0];
+      }
+      return errors[field];
     }
     return null;
   };
@@ -65,7 +67,7 @@ const Register = () => {
         <form onSubmit={handleSubmit} className="register-form">
           {errors.general && (
             <div className="error-message general-error">
-              {errors.general[0]}
+              {errors.general}
             </div>
           )}
 
@@ -77,14 +79,12 @@ const Register = () => {
               name="username"
               value={formData.username}
               onChange={handleChange}
-              className={getErrorMessage('username') ? 'error' : ''}
+              className={getErrorMessage('username') ? 'input-error' : ''}
               placeholder="Введите имя пользователя"
-              minLength={3}
-              maxLength={150}
-              required
+              disabled={isLoading}
             />
             {getErrorMessage('username') && (
-              <span className="error-message">{getErrorMessage('username')}</span>
+              <span className="error-text">{getErrorMessage('username')}</span>
             )}
             <span className="field-hint">От 3 до 150 символов</span>
           </div>
@@ -97,13 +97,12 @@ const Register = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className={getErrorMessage('password') ? 'error' : ''}
+              className={getErrorMessage('password') ? 'input-error' : ''}
               placeholder="Введите пароль"
-              minLength={8}
-              required
+              disabled={isLoading}
             />
             {getErrorMessage('password') && (
-              <span className="error-message">{getErrorMessage('password')}</span>
+              <span className="error-text">{getErrorMessage('password')}</span>
             )}
             <span className="field-hint">Минимум 8 символов</span>
           </div>

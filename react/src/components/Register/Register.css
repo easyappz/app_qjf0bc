@@ -8,12 +8,14 @@
 }
 
 .register-card {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-  padding: 48px;
   width: 100%;
-  max-width: 440px;
+  max-width: 450px;
+  background: #e0e5ec;
+  border-radius: 30px;
+  padding: 50px 40px;
+  box-shadow: 
+    20px 20px 60px #bebebe,
+    -20px -20px 60px #ffffff;
 }
 
 .register-header {
@@ -24,20 +26,21 @@
 .register-header h1 {
   font-size: 32px;
   font-weight: 700;
-  color: #1a1a1a;
-  margin: 0 0 12px 0;
+  color: #2d3748;
+  margin: 0 0 10px 0;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 .register-header p {
   font-size: 16px;
-  color: #666;
+  color: #718096;
   margin: 0;
 }
 
 .register-form {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 25px;
 }
 
 .form-group {
@@ -49,70 +52,96 @@
 .form-group label {
   font-size: 14px;
   font-weight: 600;
-  color: #333;
+  color: #4a5568;
+  margin-left: 5px;
 }
 
 .form-group input {
-  padding: 14px 16px;
-  font-size: 15px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  transition: all 0.3s ease;
+  width: 100%;
+  padding: 15px 20px;
+  font-size: 16px;
+  color: #2d3748;
+  background: #e0e5ec;
+  border: none;
+  border-radius: 15px;
   outline: none;
+  box-shadow: 
+    inset 8px 8px 16px #b8bec5,
+    inset -8px -8px 16px #ffffff;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-group input::placeholder {
+  color: #a0aec0;
 }
 
 .form-group input:focus {
-  border-color: #667eea;
-  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+  box-shadow: 
+    inset 6px 6px 12px #b8bec5,
+    inset -6px -6px 12px #ffffff;
 }
 
-.form-group input.error {
-  border-color: #ef4444;
-}
-
-.form-group input.error:focus {
-  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+.form-group input.input-error {
+  box-shadow: 
+    inset 8px 8px 16px #d8a5a5,
+    inset -8px -8px 16px #ffe5e5;
 }
 
 .field-hint {
-  font-size: 13px;
-  color: #888;
+  font-size: 12px;
+  color: #a0aec0;
+  margin-left: 5px;
 }
 
-.error-message {
+.error-text {
   font-size: 13px;
-  color: #ef4444;
-  display: block;
+  color: #e53e3e;
+  margin-left: 5px;
+  font-weight: 500;
 }
 
 .general-error {
-  padding: 12px 16px;
-  background-color: #fee2e2;
-  border-left: 4px solid #ef4444;
-  border-radius: 6px;
+  padding: 15px;
+  background: #fed7d7;
+  border-radius: 12px;
+  color: #c53030;
   font-size: 14px;
+  text-align: center;
+  box-shadow: 
+    4px 4px 8px #d8a5a5,
+    -4px -4px 8px #ffe5e5;
 }
 
 .submit-button {
+  width: 100%;
   padding: 16px;
   font-size: 16px;
   font-weight: 600;
-  color: white;
+  color: #ffffff;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border: none;
-  border-radius: 8px;
+  border-radius: 15px;
   cursor: pointer;
+  margin-top: 10px;
+  box-shadow: 
+    8px 8px 16px #b8bec5,
+    -8px -8px 16px #ffffff;
   transition: all 0.3s ease;
-  margin-top: 8px;
 }
 
 .submit-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+  box-shadow: 
+    10px 10px 20px #b8bec5,
+    -10px -10px 20px #ffffff;
 }
 
 .submit-button:active:not(:disabled) {
   transform: translateY(0);
+  box-shadow: 
+    4px 4px 8px #b8bec5,
+    -4px -4px 8px #ffffff;
 }
 
 .submit-button:disabled {
@@ -121,13 +150,13 @@
 }
 
 .register-footer {
-  margin-top: 32px;
   text-align: center;
+  margin-top: 30px;
 }
 
 .register-footer p {
   font-size: 14px;
-  color: #666;
+  color: #718096;
   margin: 0;
 }
 
@@ -140,7 +169,7 @@
   cursor: pointer;
   padding: 0;
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: color 0.3s ease;
 }
 
 .link-button:hover {
@@ -148,12 +177,66 @@
   text-decoration: underline;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
+  .register-container {
+    padding: 15px;
+  }
+
   .register-card {
-    padding: 32px 24px;
+    padding: 40px 30px;
+    border-radius: 25px;
   }
 
   .register-header h1 {
     font-size: 28px;
+  }
+
+  .register-header p {
+    font-size: 14px;
+  }
+
+  .form-group input {
+    padding: 14px 18px;
+    font-size: 15px;
+  }
+
+  .submit-button {
+    padding: 15px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .register-container {
+    padding: 10px;
+  }
+
+  .register-card {
+    padding: 35px 25px;
+    border-radius: 20px;
+  }
+
+  .register-header h1 {
+    font-size: 24px;
+  }
+
+  .register-header p {
+    font-size: 13px;
+  }
+
+  .form-group input {
+    padding: 13px 16px;
+    font-size: 14px;
+  }
+
+  .submit-button {
+    padding: 14px;
+    font-size: 14px;
+  }
+
+  .field-hint,
+  .register-footer p,
+  .link-button {
+    font-size: 13px;
   }
 }
