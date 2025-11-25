@@ -8,13 +8,13 @@ servers:
     description: API Server
 
 paths:
-  /register:
+  /register/:
     $ref: './paths/register.yml'
-  /login:
+  /login/:
     $ref: './paths/login.yml'
-  /profile:
+  /profile/:
     $ref: './paths/profile.yml'
-  /profile/update:
+  /profile/update/:
     $ref: './paths/profile-update.yml'
 
 components:

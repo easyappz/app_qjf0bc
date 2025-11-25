@@ -1,10 +1,11 @@
 post:
-  summary: Авторизация пользователя
-  description: Вход в систему с получением токена аутентификации
-  operationId: loginUser
-  x-isSecure: false
+  summary: Login user
+  description: Authenticate user with username and password and receive authentication token
+  operationId: login
   tags:
     - Authentication
+  security: []
+  x-isSecure: false
   requestBody:
     required: true
     content:
@@ -17,16 +18,16 @@ post:
           properties:
             username:
               type: string
-              description: Имя пользователя
-              example: "john_doe"
+              description: User's username
+              example: johndoe
             password:
               type: string
-              description: Пароль пользователя
               format: password
-              example: "SecurePass123"
+              description: User's password
+              example: securepassword123
   responses:
     '200':
-      description: Успешная авторизация
+      description: Login successful
       content:
         application/json:
           schema:
@@ -34,36 +35,34 @@ post:
             properties:
               token:
                 type: string
-                description: Токен аутентификации для последующих запросов
-                example: "9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b"
+                description: Authentication token for API requests
+                example: 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
               user:
                 type: object
                 properties:
                   id:
                     type: integer
-                    description: Уникальный идентификатор пользователя
+                    description: User ID
                     example: 1
                   username:
                     type: string
-                    description: Имя пользователя
-                    example: "john_doe"
+                    description: Username
+                    example: johndoe
     '400':
-      description: Неверные учетные данные
+      description: Invalid credentials or validation error
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              error:
-                type: string
-                example: "Неверное имя пользователя или пароль"
-    '401':
-      description: Ошибка аутентификации
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-                example: "Неверные учетные данные"
+            $ref: '../openapi.yml#/components/schemas/Error'
+          examples:
+            invalidCredentials:
+              summary: Invalid username or password
+              value:
+                error: Invalid username or password
+            validationError:
+              summary: Missing required fields
+              value:
+                username:
+                  - This field is required.
+                password:
+                  - This field is required.
